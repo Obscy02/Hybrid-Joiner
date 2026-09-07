@@ -1,0 +1,25 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Local dev database
+backend/saas_dev.db
+backend/*.db
+
+# Real per-deployment data - never commit an actual company's config
+config/*.yaml
+!config/config.example.yaml
+
+# Real per-deployment client credentials
+client/Client-Config.ps1
+
+# Test/tooling artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS/editor noise
+.DS_Store
+.vscode/

@@ -1,0 +1,78 @@
+# Example shape of the config a customer's IT admin loads via PUT /config
+# after deploying their own copy of this backend. All values below are
+# placeholders; nothing here is any real company's data. This is the
+# generic version of what Config.ps1 hardcoded for one specific company.
+#
+# One deployment = one customer = one config (see backend/app/models.py -
+# Config is a singleton). A second customer runs their own deployment with
+# their own version of this file, not a second entry alongside this one.
+
+# Used only when the "similar colleague" named on the joiner form can't be
+# found in AD - the tool prefers cloning a real account over trusting this.
+site_ou_fallback:
+  "Main Office": "OU=Users,OU=MainOffice,DC=example,DC=local"
+  "Regional Site": "OU=Users,OU=RegionalSite,DC=example,DC=local"
+
+# Company name on the form -> email/UPN domain, same "fallback only" rule.
+company_domain_fallback:
+  "Example Manufacturing": "example.com"
+  "Example Logistics Division": "example-logistics.com"
+
+site_phone_fallback:
+  "Main Office": "+1 555 0100"
+  "Regional Site": "+1 555 0200"
+
+site_country_code:
+  "Main Office": "US"
+  "Regional Site": "CA"
+default_country_code: "US"
+
+# Wildcard patterns for on-prem groups that should never be cloned from a
+# similar colleague (one-off distribution lists, award nominations, etc.)
+excluded_group_patterns:
+  - "*Newsletter*"
+  - "*Award Nominations*"
+
+line_manager_group: "AllLineManagers"
+
+# Entra groups to evaluate for every joiner. `condition` is one of:
+#   always | is_line_manager | has_mobile_device | field:<FormFieldName>
+#   | field_matches:<FormFieldName>:<Regex> | field_not_matches:<FormFieldName>:<Regex>
+cloud_group_rules:
+  - key: all_staff
+    display_name: "Example Corp - All Staff"
+    condition: always
+  - key: conditional_access
+    display_name: "CA - Require MFA"
+    condition: always
+  - key: vpn_it
+    display_name: "VPN - IT Staff"
+    condition: "field_matches:department:IT|IS"
+  - key: vpn_standard
+    display_name: "VPN - Standard Users"
+    condition: "field_not_matches:department:IT|IS"
+  - key: mobile_users
+    display_name: "Mobile Device Users"
+    condition: has_mobile_device
+  - key: sso_finance_app
+    display_name: "SSO - Finance Platform"
+    condition: "field:finance_app_access"
+
+primary_license_sku: "ENTERPRISEPACK"
+mobile_license_sku: "EMSPREMIUM"
+default_license_sku: "AAD_PREMIUM_P2"
+
+# Cell map for this deployment's joiner Excel template - a customer with a
+# differently laid-out form just needs a different map here, not different
+# code.
+excel_field_map:
+  full_name: "E6"
+  similar_colleague: "H7"
+  site: "E9"
+  company: "E10"
+  requested_logon_name: "H10"
+  is_line_manager: "H27"
+  mobile_device_requested: "H31"
+  finance_app_access: "H35"
+
+ad_sync_server: "adconnect.example.local"
