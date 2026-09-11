@@ -43,14 +43,14 @@ az postgres flexible-server create \
 az postgres flexible-server db create \
   --resource-group joiner-rg \
   --server-name joiner-db \
-  --database-name joinerdb
+  --name joinerdb
 
 # Allow the App Service (and your own IP, for the seed script) through -
 # tighten this to specific addresses once you know them.
 az postgres flexible-server firewall-rule create \
   --resource-group joiner-rg \
-  --name joiner-db \
-  --rule-name AllowAzureServices \
+  --server-name joiner-db \
+  --name AllowAzureServices \
   --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 ```
 
